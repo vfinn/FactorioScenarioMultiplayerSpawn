@@ -230,12 +230,13 @@ end
 
 -- Check if a chunk has any non enemy/neutral entities in it. (Ideally this should only return true if there is some
 -- player owned/created entity in it.)
+-- impact is 0.05ms multiplied by the number of chunks  JGF
 function CheckChunkHasStuff(chunk_pos)
     local chunk_area = GetAreaFromChunkPos(chunk_pos)
     local entities = game.surfaces[GAME_SURFACE_NAME].find_entities_filtered{area=chunk_area,
                                                                             force={"enemy", "neutral"},
                                                                             invert=true}
-    if (#entites > 0) then
+    if (#entities > 0) then
         return true
     end
 
@@ -243,6 +244,7 @@ function CheckChunkHasStuff(chunk_pos)
 end
 
 -- Remove all chunks at same time to reduce impact to FPS/UPS
+-- timing between 58 and 69 ms for full function
 function OarcRegrowthRemoveAllChunks()
     for key,c_remove in pairs(global.rg.removal_list) do
         local c_pos = c_remove.pos
