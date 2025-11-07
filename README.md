@@ -3,12 +3,9 @@ A Factorio mod for allowing separate spawn locations in multiplayer. Designed fo
 
 [MOD Portal Link](https://mods.factorio.com/mod/oarc-mod)
 
-## WORK IN PROGRESS
-The mod should mostly be stable now for use in Factorio V2.0 now.
-Space Age support is still in progress but the Nauvis part works fine. I'm still working on support for separate landing sites on other planets.
-
-## Read the WIKI
-The github wiki page will have the most up to date information. If you have questions, go there first, otherwise just ask.
+## NO LONGER BEING MAINTAINED
+The mod should mostly be stable now for use in Factorio V2.0 and space age now.
+Read the info on the mod page to understand the unresolved/unsolvable issues.
 
 ## Versions
 ###### Mod Only Versions: 
@@ -21,9 +18,8 @@ Check releases for stable versions. Or just go to the actual mod page like a nor
 0.17 and 0.16 have final stable versions that will no longer be maintained.  
 
 ## Status
-Latest 2.1.X version is mostly stable and playable on Factorio V2.0.X  
-Currently working on adding support for the new Space Age planets.  
-Will be removing many of the soft-mod features and other feature creep things for the first version.  
+Latest 2.1.X version is stable and playable on Factorio V2.0.X with and without Space Age.
+Please read the info on the mod page to understand the unresolved/unsolvable issues!
 
 ## Credit
 Thanks to https://github.com/vfinn (JustGoFly) and many others for their assistance!  
