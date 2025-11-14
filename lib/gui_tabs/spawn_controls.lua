@@ -434,7 +434,7 @@ function SpawnCtrlTabGuiClick(event)
         local surface_name = tags.surface --[[@as string]]
         local position = tags.position --[[@as MapPosition]]
 
-        player.set_controller{type = defines.controllers.remote, position = position, surface = surface_name}
+        -- player.set_controller{type = defines.controllers.remote, position = position, surface = surface_name}
         CompatSend(player, {"", { "oarc-spawn-gps-location" }, " ", GetGPStext(surface_name, position)})
 
     -- Teleports the player to their home base

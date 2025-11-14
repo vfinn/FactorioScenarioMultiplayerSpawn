@@ -246,12 +246,6 @@ end
 ---@return nil
 function RerollSpawn(player)
 
-    -- Make sure character is valid
-    if not player.character then
-        log("ERROR - RerollSpawn - No valid character for player: " .. player.name)
-        return
-    end
-
     -- Ensure we still have their previous spawn choices
     local spawn_choices = storage.spawn_choices[player.name]
     if (spawn_choices == nil) then
@@ -265,12 +259,17 @@ function RerollSpawn(player)
         return
     end
 
-    local surface = player.character.surface
+    local surface = getPlayerSurface(player)
     local surface_name = surface.name
 
     -- Confirm there is AN existing spawn point for this player on this surface
     if (storage.unique_spawns[surface_name] == nil or storage.unique_spawns[surface_name][player.name] == nil) then
         log("ERROR - RerollSpawn - Can't reroll? No existing spawn for " .. player.name)
+        return
+    end
+
+    if (surface_name == "nauvis") then
+        SendErrorMsg(player, { "oarc-no-reroll-on-nauvis" })
         return
     end
 

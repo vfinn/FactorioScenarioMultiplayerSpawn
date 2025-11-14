@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.25 
+First release of Oarc for BNO based on 2.1.24 of Oarc Mod. 
+Date: 2025-11-13 JustGoFly
+  Bugfixes:
+    - Fixed logistics bots being destroyed.
+    - Set_Controller caused BNO to teleport BNO players, this has been modified to only show the GPS location and not go into map mode.
+  Modding:
+    - Modified /oarc-reroll-spawn to enable BNO mod compatibility when rerolling spawn. Disabled this
+      command from working on nauvis to avoid issues with main spawn.
+---------------------------------------------------------------------------------------------------
 Version: 2.1.24
 Date: 2025-05-16
   Bugfixes:

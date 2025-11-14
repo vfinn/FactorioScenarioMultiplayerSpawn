@@ -75,7 +75,7 @@ local util = require("util") -- Only needed for the distance function in this ex
 
 -- You can require files to use them if you want like this. (Ignore the diagnostic warning.)
 ---@diagnostic disable-next-line: different-requires
-require("__oarc-mod__/lib/oarc_gui_utils") -- I have a helper function in here for creating GUI elements.
+require("__oarc-for-bno__/lib/oarc_gui_utils") -- I have a helper function in here for creating GUI elements.
 
 -- This will keep a local copy of the mod's config so you can use it in your custom events.
 script.on_event("oarc-mod-on-config-changed", function(event)

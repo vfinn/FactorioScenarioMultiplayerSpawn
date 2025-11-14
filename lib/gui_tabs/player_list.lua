@@ -163,7 +163,7 @@ function PlayerListTabGuiClick(event)
             position = target_player.position
             surface = target_player.surface
         end
-        player.set_controller{type = defines.controllers.remote, position = position, surface = surface}
+        -- player.set_controller{type = defines.controllers.remote, position = position, surface = surface}
         CompatSend(player, {"", target_player.name, ": ", GetGPStext(surface.name, position)})
     end
 end

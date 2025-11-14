@@ -668,7 +668,7 @@ function WorldEaterSingleStep()
 
         local moving_entities = game.surfaces[current_surface].find_entities_filtered {
             area = area,
-            type = { "character", "logistics-robot", "construction-robot", "car", "spider-vehicle" },
+            type = { "character", "logistic-robot", "construction-robot", "car", "spider-vehicle" },
         }
         if (#moving_entities > 0) then
             return -- It's possible there are some moving entities with no last user set.
@@ -708,7 +708,7 @@ function CheckIfChunkHasAnyPlayerEntities(surface_name, chunk)
 
     local moving_entities = game.surfaces[surface_name].find_entities_filtered {
         area = area,
-        type = { "character", "logistics-robot", "construction-robot", "car", "spider-vehicle" },
+        type = { "character", "logistic-robot", "construction-robot", "car", "spider-vehicle" },
     }
     if (#moving_entities > 0) then
         return true -- Any of these entities are player controlled and count!

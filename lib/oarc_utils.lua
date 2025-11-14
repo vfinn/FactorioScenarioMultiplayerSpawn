@@ -753,3 +753,13 @@ function RemoveInSquare(surface, area, type, pos, dist)
         end
     end
 end
+
+--- Get the surface the player is currently on (character or god mode)
+---@param player LuaPlayer
+function getPlayerSurface(player)
+    if player.character then
+        return player.character.surface
+    else 
+        return player.surface
+    end
+end
