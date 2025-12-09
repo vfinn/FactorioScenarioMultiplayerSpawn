@@ -1,5 +1,9 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.25 
+  Changes:
+    - Updated default spawn distances.
+---------------------------------------------------------------------------------------------------
+Version: 2.1.25 
 First release of Oarc for BNO based on 2.1.24 of Oarc Mod. 
 Date: 2025-11-13 JustGoFly
   Bugfixes:

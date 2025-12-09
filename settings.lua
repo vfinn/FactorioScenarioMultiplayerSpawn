@@ -89,17 +89,17 @@ data:extend({
         type = "int-setting",
         name = "oarc-mod-near-spawn-distance",
         setting_type = "runtime-global",
-        default_value = 100,
-        minimum_value = 50,
-        maximum_value = 250,
+        default_value = 250,
+        minimum_value = 150,
+        maximum_value = 300,
         order = "c2"
     },
     {
         type = "int-setting",
         name = "oarc-mod-far-spawn-distance",
         setting_type = "runtime-global",
-        default_value = 500,
-        minimum_value = 250,
+        default_value = 600,
+        minimum_value = 300,
         maximum_value = 5000,
         order = "c3"
     },

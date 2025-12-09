@@ -195,8 +195,8 @@ OCFG = {
         minimum_distance_to_existing_chunks = 20,
 
         -- The range in which a player can select how close to the center of the map they want to spawn.
-        near_spawn_distance = 100,
-        far_spawn_distance = 500,
+        near_spawn_distance = 250,   -- Don't change here or boom - must match default in settings.lua
+        far_spawn_distance = 600,    -- Don't change here or boom - must match default in settings.luaa
 
         -- This allows 2 players to spawn next to each other, each with their own starting area.
         enable_buddy_spawn = true,
