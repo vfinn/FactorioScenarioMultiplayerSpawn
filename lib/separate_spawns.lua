@@ -708,11 +708,12 @@ function SendPlayerToNewSpawn(player_name, surface_name, first_spawn, is_host)
     local player = game.players[player_name]
 
     -- Check if player character is nil
-    if (player.character == nil) then
-        log("Player character is nil, can't send to spawn point just yet: " .. player_name)
-        QueueNilCharacterForNewSpawnTeleport(player_name, surface_name, first_spawn, is_host)
-        return
-    end
+-- this is unnecessary - you can teleport a player without a character - required for BNO
+--    if (player.character == nil) then
+--        log("Player character is nil, can't send to spawn point just yet: " .. player_name)
+--        QueueNilCharacterForNewSpawnTeleport(player_name, surface_name, first_spawn, is_host)
+--        return
+--    end
 
     -- Send the player to that position
     TeleportPlayerToRespawnPoint(surface_name, player, first_spawn)
@@ -1222,7 +1223,7 @@ function OnTickNilCharacterTeleportQueue()
 
         -- Else if they have a character, send them to the spawn point.
         -- And hope to high heaven this doesn't recurse infinitely.
-        elseif (player.character ~= nil) then
+        else                    -- if (player.character ~= nil) then    -- you can teleport a non player - this aids BNO
             storage.nil_character_teleport_queue[player_name] = nil
             SendPlayerToNewSpawn(player_name, data.surface_name, data.first_spawn, data.is_host)
         end
