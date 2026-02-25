@@ -604,6 +604,16 @@ function DisplaySpawnOptions(player)
         default_team = SPAWN_TEAM_CHOICE.join_own_team
     end
     ---@type OarcSpawnChoices
+    local playerSelectedDistance = gameplay.near_spawn_distance
+    local playerSelectedMoat = gameplay.allow_moats_around_spawns
+    if storage.spawn_choices[player.name] then
+        if storage.spawn_choices[player.name].distance then
+            playerSelectedDistance = storage.spawn_choices[player.name].distance
+        end
+        if storage.spawn_choices[player.name].moat then
+            playerSelectedMoat = storage.spawn_choices[player.name].moat
+        end
+    end    
     local spawn_choices_entry = {
         surface_name = gameplay.default_surface,
         team = default_team,
