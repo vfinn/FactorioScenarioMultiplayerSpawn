@@ -1,7 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.30
+ Changes:
+    - Distance slider retains it's value during a restart
+    - Fixed crash when BNO player dies and respawns
+---------------------------------------------------------------------------------------------------
+Version: 2.1.29
+ Changes:
+   - Fixed game join crash issue.
+---------------------------------------------------------------------------------------------------
 Version: 2.1.28
-  Changes:
-   - Logging additions
+ Changes:
+   - Stubbed out a validation SyncModSettingsToOCFG function to avoid errors when BNO is installed.
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.27
   Changes:
