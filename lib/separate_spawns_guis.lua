@@ -218,13 +218,17 @@ function CreateDistanceSelectSlider(parent_flow, minimum_distance, maximum_dista
         tooltip = { "oarc-spawn-distance-slider-tooltip" }
     }
     label.style.horizontal_align = "left"
+    local player_distance = minimum_distance
+    if storage.spawn_choices[game.players[parent_flow.player_index].name] and storage.spawn_choices[game.players[parent_flow.player_index].name].distance then
+        player_distance = storage.spawn_choices[game.players[parent_flow.player_index].name].distance
+    end
     local slider = slider_flow.add {
         name = "spawn_distance_slider",
         type = "slider",
         tags = { action = "oarc_spawn_options", setting = "distance_select" },
         minimum_value = minimum_distance,
         maximum_value = maximum_distance,
-        value = minimum_distance,
+        value = player_distance,
         discrete_slider = true,
         value_step = 1,
         tooltip = { "oarc-spawn-distance-slider-tooltip" }
@@ -234,9 +238,9 @@ function CreateDistanceSelectSlider(parent_flow, minimum_distance, maximum_dista
         name = "spawn_distance_slider_value",
         type = "textfield",
         ignored_by_interaction = true,
-        caption = minimum_distance,
+        caption = player_distance,
         style = "slider_value_textfield",
-        text = tostring(minimum_distance)
+        text = tostring(player_distance)
     }
     text_value.style.horizontal_align = "right"
     text_value.style.width = 50
@@ -269,17 +273,25 @@ function CreateSpawnSettingsFrame(parent_flow, gameplay)
     DisplayTeamSelectRadioButtons(spawn_settings_frame, gameplay.enable_main_team, gameplay.enable_separate_teams)
 
     -- Allow players to spawn with a moat around their area.
+    local moat_option_checkbox = true
+    if storage.spawn_choices[game.players[parent_flow.player_index].name] and storage.spawn_choices[game.players[parent_flow.player_index].name].moat ~= nil then
+        moat_option_checkbox = storage.spawn_choices[game.players[parent_flow.player_index].name].moat
+    end 
     if (gameplay.allow_moats_around_spawns) then
         spawn_settings_frame.add {
             name = "isolated_spawn_moat_option_checkbox",
             tags = { action = "oarc_spawn_options", setting = "moat_option" },
             type = "checkbox",
             caption = { "oarc-moat-option" },
-            state = true, -- Default to true
+            state = moat_option_checkbox, -- Default to true or whatever player chose on previous spawn
             tooltip = { "oarc-moat-option-tooltip" }
         }
     end
-
+    local distance = storage.spawn_choices[game.players[parent_flow.player_index].name].distance or gameplay.near_spawn_distance
+     -- If the distance slider is not shown, still save the default distance choice in the spawn choices table so it can be used by the spawning logic.
+     if not (gameplay.far_spawn_distance > gameplay.near_spawn_distance) then
+        storage.spawn_choices[game.players[parent_flow.player_index].name].distance = distance
+     end
     CreateDistanceSelectSlider(spawn_settings_frame, gameplay.near_spawn_distance, gameplay.far_spawn_distance)
 end
 
@@ -610,16 +622,16 @@ function DisplaySpawnOptions(player)
         if storage.spawn_choices[player.name].distance then
             playerSelectedDistance = storage.spawn_choices[player.name].distance
         end
-        if storage.spawn_choices[player.name].moat then
+        if storage.spawn_choices[player.name].moat ~= nil then
             playerSelectedMoat = storage.spawn_choices[player.name].moat
         end
     end    
     local spawn_choices_entry = {
         surface_name = gameplay.default_surface,
         team = default_team,
-        moat = gameplay.allow_moats_around_spawns,
+        moat = playerSelectedMoat,
         buddy = nil,
-        distance = gameplay.near_spawn_distance,
+        distance = playerSelectedDistance,
         host = nil,
         buddy_team = false
     }

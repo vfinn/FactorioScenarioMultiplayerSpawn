@@ -126,6 +126,7 @@ function ValidateAndLoadConfig()
 
     -- Check that each entry in OCFG matches the default value of the mod setting. This is just for my own sanity.
     -- Helps make sure mod default settings and my internal config are in sync.
+
     for _,entry in pairs(OCFG_KEYS) do
         if (entry.mod_key ~= "") then
             local mod_key = entry.mod_key
@@ -287,21 +288,22 @@ end
 ---Syncs all mod settings to the OARC config table.
 ---@return nil
 function SyncModSettingsToOCFG()
+-- Disabled by JGF 2024-06-12 - wouldn't let us change values prior to launching the game.
 
     -- Override the mod settings with the the storage.ocfg settings.
-    for _,entry in pairs(OCFG_KEYS) do
-        if (entry.mod_key ~= "") then
-            local mod_key = entry.mod_key
-            local oarc_key = entry.ocfg_keys
-            local scenario_value = GetGlobalOarcConfigUsingKeyTable(oarc_key)
-            if (scenario_value ~= nil) then
-                local ok,result = pcall(function() settings.global[mod_key] = { value = scenario_value } end)
-                if not ok then
-                    error("Error setting mod setting: " .. mod_key .. " = " .. tostring(scenario_value) .. "\n" .. "If you see this, you probably picked an invalid value for a setting override in the custom scenario.")
-                end
-            end
-        end
-    end
+--    for _,entry in pairs(OCFG_KEYS) do
+--        if (entry.mod_key ~= "") then
+--            local mod_key = entry.mod_key
+--            local oarc_key = entry.ocfg_keys
+--            local scenario_value = GetGlobalOarcConfigUsingKeyTable(oarc_key)
+--            if (scenario_value ~= nil) then
+--                local ok,result = pcall(function() settings.global[mod_key] = { value = scenario_value } end)
+--                if not ok then
+--                    error("Error setting mod setting: " .. mod_key .. " = " .. tostring(scenario_value) .. "\n" .. "If you see this, you probably picked an invalid value for a setting override in the custom scenario.")
+--                end
+--            end
+--        end
+--    end
 
 end
 

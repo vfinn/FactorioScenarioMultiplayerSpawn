@@ -329,7 +329,8 @@ end
 ---@param player LuaPlayer
 ---@return nil
 function GivePlayerRespawnItems(player)
-    local surface_name = player.character.surface.name
+    local surface_name = getPlayerSurface(player).name
+    
     if (storage.ocfg.surfaces_config[surface_name] == nil) then
         error("GivePlayerRespawnItems - Missing surface config! " .. surface_name)
         return
@@ -344,7 +345,13 @@ end
 ---@param player LuaPlayer
 ---@return nil
 function GivePlayerStarterItems(player)
-    local surface_name = player.character.surface.name
+    local surface_name=nil
+    local char = player.character
+    if char == nil then  -- bno character mode, player has no character, so we have to assume they are on the starting surface
+        surface_name = "nauvis"
+    else
+         surface_name = player.character.surface.name
+    end
     if (storage.ocfg.surfaces_config[surface_name] == nil) then
         error("GivePlayerStarterItems - Missing surface config! " .. surface_name)
         return
