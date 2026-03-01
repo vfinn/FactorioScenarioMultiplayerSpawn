@@ -7,6 +7,13 @@ data:extend({
         order = "a1"
     },
     {
+        type = "bool-setting",
+        name = "bno-biter-swarm-attack",     
+        setting_type = "startup",
+        default_value = true,
+        order="a11"
+    },
+    {
         type = "string-setting",
         name = "oarc-mod-main-force-name",
         setting_type = "startup",

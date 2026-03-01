@@ -1,4 +1,8 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.28
+  Changes:
+   - Logging additions
+---------------------------------------------------------------------------------------------------
 Version: 2.1.27
   Changes:
    - Updated to enable brave new oarc to spawn on other planets. Teleport disabled non character players.

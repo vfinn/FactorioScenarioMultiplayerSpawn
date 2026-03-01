@@ -1889,7 +1889,7 @@ function CargoPodHandlerOnTick()
 
             -- Pod has a spawn it belongs to, send it there.
             if has_unique_spawn then
-                log("Pod has a unique spawn, need to send it there.")
+                log(force.name .. " Pod has a unique spawn on " .. surface.name .. ", need to send it there.")
                 
                 -- Forcefully finish descending and remove the pod from our list.
                 pod.force_finish_descending()

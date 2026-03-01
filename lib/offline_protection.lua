@@ -95,6 +95,7 @@ function OarcModifyEnemyGroup(event)
 
     -- Is someone in the group online?
     if (#online_players > 0) then
+        configureSwarmPing(target_player, group)
         -- log("OarcModifyEnemyGroup RELEASING enemy group since someone in the group is ONLINE " .. target_player.name)
         return
     end
