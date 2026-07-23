@@ -715,6 +715,8 @@ function SendPlayerToNewSpawn(player_name, surface_name, first_spawn, is_host)
 --        return
 --    end
 
+    -- If the player is in map view mode, exit it before teleporting them.
+    player.exit_remote_view()
     -- Send the player to that position
     TeleportPlayerToRespawnPoint(surface_name, player, first_spawn)
 
@@ -1889,7 +1891,7 @@ function CargoPodHandlerOnTick()
 
             -- Pod has a spawn it belongs to, send it there.
             if has_unique_spawn then
-                log(force.name .. " Pod has a unique spawn on " .. surface.name .. ", need to send it there.")
+                log("Pod has a unique spawn, need to send it there.")
                 
                 -- Forcefully finish descending and remove the pod from our list.
                 pod.force_finish_descending()

@@ -1,4 +1,21 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.2
+Changes:
+   - Fixed a crash when someone joins or resets from map view.
+---------------------------------------------------------------------------------------------------
+Version: 2.2.1
+- Modified to enable working with v 2.1.9 of Factorio.  Please report any issues you find.
+Removed support for these mods until tested:
+   "(?) dangOreus",
+   "(?) better-chat",
+   "(?) Milestones",
+   "(?) space-exploration",
+   "(?) alien-biomes",
+   "(?) sonaxaton-research-queue",
+   "(?) helmod",
+   "(?) blueprint-sandboxes",
+   "(?) factorissimo-2-notnotmelon",
+---------------------------------------------------------------------------------------------------
 Version: 2.1.30
  Changes:
     - Distance slider retains it's value during a restart

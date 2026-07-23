@@ -32,7 +32,6 @@ require("lib/oarc_gui_tabs")
 require("lib/offline_protection")
 require("lib/scaled_enemies")
 require("lib/sharing")
-require("lib/swarm")
 
 -- TODO: Possibly remove this later?
 require("lib/oarc_tests")
@@ -57,7 +56,6 @@ script.on_init(function(event)
 
     InitSpawnGlobalsAndForces()
     CreateHoldingPenSurface() -- Must be after init spawn globals?
-    BNOSwarmGroupInit()
 
     -- Useful for debugging and if players choose not to use the provided empty scenario.
     if remote.interfaces["freeplay"] then
@@ -268,7 +266,6 @@ script.on_event(defines.events.on_tick, function(event)
     DelayedSpawnOnTick()
     FadeoutRenderOnTick()
     OnTickNilCharacterTeleportQueue()
-    OnTickCheckSwarm()
 
     if storage.ocfg.regrowth.enable_regrowth then
         RegrowthOnTick()
@@ -491,67 +488,6 @@ script.on_event(defines.events.on_gui_elem_changed, function(event)
     if not event.element.valid then return end
 
     OarcGuiTabsElemChanged(event)
-end)
-
-----------------------------------------
--- On player clicked on gps tag
--- Save player's stuff so they don't lose it if they can't get to the corpse fast enough.
-----------------------------------------
-
-script.on_event(defines.events.on_player_clicked_gps_tag, function(event)
-    local biter, swarmGroup
-    if (#storage.swarmGroup > 0) then
-        for k,swarm in pairs(storage.swarmGroup ) do
-            if ((swarm.startPosition.x == event.position.x) and  (swarm.startPosition.y == event.position.y)) then
-                swarmGroup = swarm.group
-                break
-            end
-        end
-    end
-    if (swarmGroup ~= nil and swarmGroup.valid) then
-        for _,member in pairs(swarmGroup.members) do
-            if (member.active) then
-                biter=member
-                break
-            end
-        end
-        if (biter ~=nil) then
-            if (biter.valid) then   -- follow the biter swarm with text and camera
---2.0                game.players[event.player_index].zoom_to_world(event.position,  0.5, biter) -- follow a live biter
-                local rid1=rendering.draw_text{text=string.format("Swarm coming to kill you, %s.", game.players[event.player_index].name),
-                        surface=game.surfaces[GAME_SURFACE_NAME],
-                        target=biter,
-                        color={1,0.1,0.1,1},
-                        scale=3,
-                        font="compi",
-                        time_to_live=TICKS_PER_SECOND*9,
-                        draw_on_ground=false}
-                local rid2=rendering.draw_text{text="Press ESC to exit this view.",
-                        surface=game.surfaces[GAME_SURFACE_NAME],
-                        target=biter,
-                        target_offset={0,2},
-                        color={1,0.1,0.1,1},
-                        scale=2,
-                        font="compi",
-                        time_to_live=TICKS_PER_SECOND*12,
-                        draw_on_ground=false}
---                        table.insert(storage.oarc_renders_fadeout, rid1)            
---                        table.insert(storage.oarc_renders_fadeout, rid2)            
-            else    -- show where they were when they formed
---2.0                game.players[event.player_index].zoom_to_world(event.position)                
---                local rid1=rendering.draw_text{text=string.format("Swarm dead, they formed here, %s.", game.players[event.player_index].name),                        surface=game.surfaces[GAME_SURFACE_NAME],                        target={event.position.x, event.position.y},                        color={1,0.1,0.1,0.7},                        scale=3,                        font="compi",                        time_to_live=TICKS_PER_SECOND*9,                        draw_on_ground=false}
---                local rid2=rendering.draw_text{text="Press ESC to exit this view.",                        surface=game.surfaces[GAME_SURFACE_NAME],                        target=biter,{event.position.x, event.position.y+2},                        color={1,0.1,0.1,0.7},                        scale=2,                        font="compi",                        time_to_live=TICKS_PER_SECOND*12,                        draw_on_ground=false}
---                table.insert(storage.oarc_renders_fadeout, rid1)            
---                table.insert(storage.oarc_renders_fadeout, rid2)            
-            end
-        end
-    else    -- show where they were when they formed
---2.0        game.players[event.player_index].zoom_to_world(event.position)
---        local rid1=rendering.draw_text{text=string.format("Swarm dead, they formed here, %s.", game.players[event.player_index].name),                    surface=game.surfaces[GAME_SURFACE_NAME],                    target=event.position,                    color={1,0.1,0.1,0.7},                    scale=3,                    font="compi",                    time_to_live=TICKS_PER_SECOND*9,                    draw_on_ground=false}
---        local rid2=rendering.draw_text{text=string.format("Press ESC to exit this view.", game.players[event.player_index].name),                    surface=game.surfaces[GAME_SURFACE_NAME],                    target={event.position.x, event.position.y+2},                    color={1,0.1,0.1,0.7},                    scale=2,                    font="compi",                    time_to_live=TICKS_PER_SECOND*12,                    draw_on_ground=false}
---         table.insert(storage.oarc_renders_fadeout, rid1)            
---         table.insert(storage.oarc_renders_fadeout, rid2)            
-    end
 end)
 
 ----------------------------------------

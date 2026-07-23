@@ -350,7 +350,10 @@ function GivePlayerStarterItems(player)
     if char == nil then  -- bno character mode, player has no character, so we have to assume they are on the starting surface
         surface_name = "nauvis"
     else
-         surface_name = player.character.surface.name
+        surface_name = player.character.surface.name
+        if (surface_name == "oarc_holding_pen") then
+            surface_name = "nauvis"
+        end
     end
     if (storage.ocfg.surfaces_config[surface_name] == nil) then
         error("GivePlayerStarterItems - Missing surface config! " .. surface_name)
