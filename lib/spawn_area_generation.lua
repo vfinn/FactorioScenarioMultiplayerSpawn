@@ -387,8 +387,12 @@ end
 --- Randomly place lightning attractors specific for Fulgora. This should space them out so they don't overlap too much.
 ---@param surface LuaSurface
 ---@param position MapPosition
+---@param count number
+---@param force ForceID The force that owns the spawn. Using the shared "player" force breaks
+--- deconstruction planners for per-player forces, since planners only mark entities of the
+--- player's own force. See https://github.com/Oarcinae/FactorioScenarioMultiplayerSpawn/issues/317
 ---@return nil
-function PlaceFulgoranLightningAttractors(surface, position, count)
+function PlaceFulgoranLightningAttractors(surface, position, count, force)
     local spawn_config = storage.ocfg.surfaces_config[surface.name].spawn_config
     local radius = storage.ocfg.spawn_general.spawn_radius_tiles * spawn_config.radius_modifier
 
@@ -405,8 +409,66 @@ function PlaceFulgoranLightningAttractors(surface, position, count)
             surface.create_entity({
                 name = ATTRACTOR_NAME,
                 position = open_pos,
-                force = "player" -- Same as native game
+                force = force or "player"
             })
         end
+    end
+end
+
+--- Adopt Fulgoran lightning attractors owned by the shared "player" force when a player
+--- selects them with a deconstruction planner. Naturally generated attractors (and
+--- spawn-area attractors placed before this fix) belong to the "player" force, and
+--- deconstruction planners only mark entities of the player's own force, so without this
+--- they can only be removed by hand.
+--- See https://github.com/Oarcinae/FactorioScenarioMultiplayerSpawn/issues/317
+---@param event EventData.on_player_deconstructed_area
+---@return nil
+function AdoptSharedForceLightningAttractors(event)
+    if event.alt then return end -- alt-selection cancels deconstruction, nothing to adopt
+
+    local player = game.get_player(event.player_index)
+    if (player == nil) then return end
+
+    local force = player.force
+    if (force.name == "player") then return end -- planner already works natively
+
+    local shared_force = game.forces["player"]
+    if (shared_force == nil) then return end
+
+    -- Respect the planner's filters if we can read them (fall back to unfiltered on error).
+    local skip = false
+    pcall(function()
+        local planner = event.stack or event.record
+        if (planner == nil) then return end
+        if (planner.object_name == "LuaItemStack" and not planner.valid_for_read) then return end
+        if (not planner.is_deconstruction_item) then return end
+        if planner.trees_and_rocks_only then
+            skip = true
+            return
+        end
+        local filters = planner.entity_filters
+        if (filters == nil or #filters == 0) then return end
+        local listed = false
+        for _, filter in pairs(filters) do
+            local name = (type(filter) == "table") and filter.name or filter
+            if (name == "fulgoran-ruin-attractor") then
+                listed = true
+                break
+            end
+        end
+        local mode = planner.entity_filter_mode
+        if (mode == defines.deconstruction_item.entity_filter_mode.whitelist and not listed) then skip = true end
+        if (mode == defines.deconstruction_item.entity_filter_mode.blacklist and listed) then skip = true end
+    end)
+    if skip then return end
+
+    local attractors = event.surface.find_entities_filtered {
+        area = event.area,
+        name = "fulgoran-ruin-attractor",
+        force = shared_force
+    }
+    for _, attractor in pairs(attractors) do
+        attractor.force = force
+        attractor.order_deconstruction(force, player)
     end
 end

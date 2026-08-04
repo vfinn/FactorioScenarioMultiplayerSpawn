@@ -667,7 +667,7 @@ function GenerateFinalSpawnPieces(delayed_spawn)
 
     -- Place randomized entities
     if (delayed_spawn.surface_name == "fulgora") then
-        PlaceFulgoranLightningAttractors(surface, delayed_spawn.position, 10)
+        PlaceFulgoranLightningAttractors(surface, delayed_spawn.position, 10, game.players[delayed_spawn.host_name].force)
     end
 
     PlaceRandomEntities(surface, delayed_spawn.position)

@@ -116,6 +116,10 @@ end)
 -- script.on_event(defines.events.on_player_changed_surface, function(event)
 -- end)
 
+script.on_event(defines.events.on_player_deconstructed_area, function(event)
+    AdoptSharedForceLightningAttractors(event)
+end)
+
 script.on_event(defines.events.on_player_driving_changed_state, function (event)
     local entity = event.entity
 
