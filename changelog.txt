@@ -1,4 +1,8 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.3
+Changes: Made by RBTCollins 8/1/2026
+    Fixes the 'can't deconstruct fulgoran lightning attractors' issue.
+---------------------------------------------------------------------------------------------------
 Version: 2.2.2
 Changes:
    - Fixed a crash when someone joins or resets from map view.
