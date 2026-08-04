@@ -57,6 +57,7 @@ script.on_init(function(event)
 
     InitSpawnGlobalsAndForces()
     CreateHoldingPenSurface() -- Must be after init spawn globals?
+
     BNOSwarmGroupInit()
 
     -- Useful for debugging and if players choose not to use the provided empty scenario.
@@ -518,25 +519,29 @@ script.on_event(defines.events.on_player_clicked_gps_tag, function(event)
         if (biter ~=nil) then
             if (biter.valid) then   -- follow the biter swarm with text and camera
 --2.0                game.players[event.player_index].zoom_to_world(event.position,  0.5, biter) -- follow a live biter
-                local rid1=rendering.draw_text{text=string.format("Swarm coming to kill you, %s.", game.players[event.player_index].name),
-                        surface=game.surfaces[GAME_SURFACE_NAME],
+                local rid1=rendering.draw_text{text=string.format("Swarm of size: " .. #swarmGroup.members .. " coming to kill you, %s.", game.players[event.player_index].name),
+                        surface=biter.surface,
                         target=biter,
                         color={1,0.1,0.1,1},
                         scale=3,
                         font="compi",
                         time_to_live=TICKS_PER_SECOND*9,
-                        draw_on_ground=false}
+                        draw_on_ground=false
+                    }
                 local rid2=rendering.draw_text{text="Press ESC to exit this view.",
-                        surface=game.surfaces[GAME_SURFACE_NAME],
+                        surface=biter.surface,
                         target=biter,
-                        target_offset={0,2},
+--                        target_offset={0,8},
                         color={1,0.1,0.1,1},
                         scale=2,
                         font="compi",
                         time_to_live=TICKS_PER_SECOND*12,
-                        draw_on_ground=false}
---                        table.insert(storage.oarc_renders_fadeout, rid1)            
---                        table.insert(storage.oarc_renders_fadeout, rid2)            
+                        draw_on_ground=false,
+                        vertical_alignment="bottom"
+                    }
+                local player = game.players[event.player_index]
+                create_follow_gui(player, biter, rid1)
+                --local cam =player.gui.screen.add{type="camera", position = biter.position, name="entity_tracker", entity=biter, zoom=0.5, caption="Biter Tracker"}
             else    -- show where they were when they formed
 --2.0                game.players[event.player_index].zoom_to_world(event.position)                
 --                local rid1=rendering.draw_text{text=string.format("Swarm dead, they formed here, %s.", game.players[event.player_index].name),                        surface=game.surfaces[GAME_SURFACE_NAME],                        target={event.position.x, event.position.y},                        color={1,0.1,0.1,0.7},                        scale=3,                        font="compi",                        time_to_live=TICKS_PER_SECOND*9,                        draw_on_ground=false}
@@ -552,6 +557,15 @@ script.on_event(defines.events.on_player_clicked_gps_tag, function(event)
 --         table.insert(storage.oarc_renders_fadeout, rid1)            
 --         table.insert(storage.oarc_renders_fadeout, rid2)            
     end
+end)
+
+script.on_event(defines.events.on_runtime_mod_setting_changed, function(event)
+    if storage.follow_labels == nil then 
+        storage.follow_labels = {} 
+    end
+
+--    log("events.on_runtime_mod_setting_changed: setting " .. event.setting .. " for: " .. game.players[event.player_index].name .. "type: " .. event.setting_type)
+--    log("Physical setting changed to: " .. settings.get_player_settings(event.player_index)["bno-share-chart"])
 end)
 
 ----------------------------------------

@@ -1,4 +1,8 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.31
+ Changes:
+    - Added support for Biter Attack Notification.
+ ---------------------------------------------------------------------------------------------------
 Version: 2.1.30
  Changes:
     - Distance slider retains it's value during a restart

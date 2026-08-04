@@ -1,17 +1,19 @@
 function BNOSwarmGroupInit()
-    storage.bno.warn_biter_attack = setGlobalSetting("bno-biter-swarm-attack", true, false)
+    storage.follow_labels = {}
+    storage.ocfg.warn_biter_attack = setGlobalSetting("bno-biter-swarm-attack", true, false)
 	if (not storage.swarmGroup) then
 		storage.swarmGroup = {}
 	end    
 end
 
 function OnTickCheckSwarm()
-    if storage.bno.warn_biter_attack then
+    if storage.ocfg.warn_biter_attack then
         storage.swarmCheckTick = storage.swarmCheckTick or game.tick
         if (game.tick >= storage.swarmCheckTick) then
             BNOCleanGPSStack()
-            storage.swarmCheckTick = game.tick + TICKS_PER_SECOND*2    -- check again in 2 seconds
+            storage.swarmCheckTick = game.tick + TICKS_PER_SECOND*0.5    -- check again in 1/2 seconds
         end
+        
     end
 end
 
@@ -41,7 +43,7 @@ function BNOCleanGPSStack()
                         -- the groups that attack will eventually go to group_state.attacking_target, but first moving
                         if (storage.swarmGroup[k].group.state == defines.group_state.moving) then
                             if (not storage.swarmGroup[k].gpsSent) then
-                                storage.swarmGroup[k].target_player.print(storage.swarmGroup[k].target_player.name .. ": Wave of " .. #storage.swarmGroup[k].group.members .. " biters incoming :" .. GetGPStext(storage.swarmGroup[k].startPosition), {sound=defines.print_sound.never})
+                                storage.swarmGroup[k].target_player.print(storage.swarmGroup[k].target_player.name .. ": Wave of " .. #storage.swarmGroup[k].group.members .. " biters incoming :" .. GetGPStext(storage.swarmGroup[k].group.surface.name, storage.swarmGroup[k].startPosition), {sound=defines.print_sound.never})
                                 storage.swarmGroup[k].target_player.play_sound { path = 'wave-coming' }
                                 storage.swarmGroup[k].gpsSent=true   -- only send this ping once
                             end
@@ -101,8 +103,8 @@ function CheckSwarm(group)
     -- Is the target player online or opted in for attacks while offline ? Then the attack can go through.
     if (target_player.connected) then --  or not storage.ocfg.offline_protect[target_player.index]) then
         if (storage.enable_oe_debug) then
-            SendBroadcastMsg("Enemy group released (player): " .. GetGPStext(group.position) .. " Target: " .. GetGPStext(target_entity.position) .. " " .. target_player.name)
-            log("OarcModifyEnemyGroup RELEASING enemy group since player " .. target_player.name .. " is ONLINE, " .. GetGPStext(group.position) .. " Target: " .. GetGPStext(target_entity.position))
+            SendBroadcastMsg("Enemy group released (player): " .. GetGPStext("nauvis", group.position) .. " Target: " .. GetGPStext("nauvis", target_entity.position) .. " " .. target_player.name)
+            log("OarcModifyEnemyGroup RELEASING enemy group since player " .. target_player.name .. " is ONLINE, " .. GetGPStext("nauvis", group.position) .. " Target: " .. GetGPStext("nauvis", target_entity.position))
         end
         configureSwarmPing(target_player, group)
         return
@@ -141,7 +143,7 @@ function configureSwarmPing(target_player, group)
             ((group.command.type == defines.command.attack) or 
                 (group.command.type == defines.command.attack_area) or
                 (group.command.type == defines.command.build_base))) then
-            log("spawning swarm " .. GetGPStext(group.position) .. " for " .. target_player.name)
+            log("spawning swarm " .. GetGPStext("nauvis", group.position) .. " for " .. target_player.name)
         end
         if ((group.command.type == defines.command.attack) or 
             (group.command.type == defines.command.attack_area)) then
@@ -150,17 +152,17 @@ function configureSwarmPing(target_player, group)
         else
             if (storage.enable_oe_debug) then
                 if (group.command.type == defines.command.build_base) then
-                    log("The bastards are building a base " .. GetGPStext(group.position) .. target_player.name)
+                    log("The bastards are building a base " .. GetGPStext("nauvis", group.position) .. target_player.name)
                     log(target_player.name .. "- bastards are building a base : " .. GetGPStext(group.position))
                 else
                     if (group.command.type == defines.command.go_to_location) then
-                        log(target_player.name .. " WTF - got this command - go_to_location " .. GetGPStext(group.position) .. " " .. target_player.name)
+                        log(target_player.name .. " WTF - got this command - go_to_location " .. GetGPStext("nauvis", group.position) .. " " .. target_player.name)
                     elseif (group.command.type == defines.command.wander) then
-                        log(target_player.name .. " WTF - got this command - wander " .. GetGPStext(group.position) .. " " .. target_player.name)
+                        log(target_player.name .. " WTF - got this command - wander " .. GetGPStext("nauvis", group.position) .. " " .. target_player.name)
                     elseif (group.command.type == defines.command.stop) then
-                        log(target_player.name .. " WTF - got this command - stop " .. GetGPStext(group.position) .. " " .. target_player.name)
+                        log(target_player.name .. " WTF - got this command - stop " .. GetGPStext("nauvis", group.position) .. " " .. target_player.name)
                     elseif (group.command.type == defines.command.flee) then
-                        log(target_player.name .. " WTF - got this command - flee " .. GetGPStext(group.position) .. " " .. target_player.name)
+                        log(target_player.name .. " WTF - got this command - flee " .. GetGPStext("nauvis", group.position) .. " " .. target_player.name)
                     end
                 end
             end
@@ -228,3 +230,74 @@ function setGlobalSetting(settings_startup_name, default_val, isYesNo)
     log("setGlobalSetting: " .. settings_startup_name .. ", isYesNo? " .. tostring(isYesNo) .. ", input value: " .. tostring(default_val) .. ", output value: " .. tostring(tmpVal))
     return tmpVal
 end
+
+----------------------------------------------------------------
+-- Create a GUI popup that follows an entity
+----------------------------------------------------------------
+function create_follow_gui(player, entity, label)
+    -- Remove old GUI if present
+    if storage.follow_labels == nil then 
+        storage.follow_labels = {} 
+    end
+    local old = player.gui.screen["follow-biter-frame"]
+    if old and old.gui and old.gui.valid then
+        old.destroy()
+    end
+
+    -- Create a new frame
+    local frame = player.gui.screen.add{
+        type = "frame",
+        name = "follow-biter-frame",
+        caption = "Tracking Biter",
+        direction = "vertical"
+    }
+    frame.style.padding = 2
+    --frame.style.size = {400, 200}
+    frame.auto_center = true
+    local minimap = frame.add {
+        type = "minimap",
+        name = "follow-biter-minimap",
+        surface_index = entity.surface.index,
+        -- position = entity.position,
+        zoom = 2,
+        entity = entity
+    } 
+    minimap.style.horizontally_stretchable = true
+    minimap.style.vertically_stretchable = true
+    minimap.style.size = 200
+    minimap.style.left_padding = 1
+    storage.follow_labels[player.index] = {
+        id = label,
+        entity = entity,
+        minimap = minimap
+    }
+
+
+    -- Initial position
+    local pos = entity.position
+    if pos then
+        frame.location = {x = pos.x, y = pos.y - 40}
+    end
+end
+
+----------------------------------------------------------------
+-- Update GUI position each tick
+----------------------------------------------------------------
+function update_follow_gui_position(player)
+    local data = storage.follow_labels[player.index]
+    if not data then return end
+
+    local id = data.id
+    local entity = data.entity
+
+    -- Cleanup if entity is gone
+    if not (entity and entity.valid and entity.health > 0) then
+        if id and id.valid then id.destroy() end
+        storage.follow_labels[player.index] = nil
+        player.gui.screen["follow-biter-frame"].destroy()
+        return
+    else
+        data.minimap.position = entity.position
+    end
+end
+
