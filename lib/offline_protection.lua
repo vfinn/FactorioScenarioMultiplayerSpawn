@@ -83,12 +83,6 @@ function OarcModifyEnemyGroup(event)
         return
     end
 
-    -- Is the target player online? Then the attack can go through.
-    if (target_player.connected) then
-        -- log("OarcModifyEnemyGroup RELEASING enemy group since player is ONLINE " .. target_player.name)
-        return
-    end
-
     -- Find the shared spawn that the player is part of.
     -- This could be the own player's spawn (quite likely)
     local online_players = GetPlayersFromSameSpawn(target_player.name, false)
@@ -96,6 +90,12 @@ function OarcModifyEnemyGroup(event)
     -- Is someone in the group online?
     if (#online_players > 0) then
         -- log("OarcModifyEnemyGroup RELEASING enemy group since someone in the group is ONLINE " .. target_player.name)
+        return
+    end
+
+    -- Is the target player online? Then the attack can go through.
+    if (target_player.connected) then
+        -- log("OarcModifyEnemyGroup RELEASING enemy group since player is ONLINE " .. target_player.name)
         return
     end
 

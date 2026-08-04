@@ -1965,6 +1965,7 @@ function CreatePlayerForce(force_name)
         -- Create a new force
     elseif (#game.forces < MAX_FORCES) then
         new_force = game.create_force(force_name)
+        new_force.reset()
         new_force.share_chart = storage.ocfg.gameplay.enable_shared_team_vision
         new_force.friendly_fire = storage.ocfg.gameplay.enable_friendly_fire
         -- SetCeaseFireBetweenAllPlayerForces()
