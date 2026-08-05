@@ -1,4 +1,20 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.4
+Fix: Made by RBTCollins 8/5/2026
+    The mod tracks unmanned cargo pods launched from space platforms (in storage.cargo_pods) so that 
+    pods descending to a planet with no landing pad can be redirected to the owner's spawn. The 
+    per-tick handler CargoPodHandlerOnTick decides "this pod is descending to a planet" by checking 
+    pod.surface.platform == nil. A pod sent platform to platform never satisfies that condition — 
+    both its origin and destination surfaces are platforms — so it stays tracked until it lands, at 
+    which point the game destroys the pod entity. On the next tick the handler calls pod.surface on 
+    the now-invalid entity reference, which raises LuaEntity API call when LuaEntity was invalid and 
+    brings down the server. Any item transfer between platforms triggers this, every time.
+Change: 
+    At the top of the tracking loop, if pod.valid is false, delete the entry and move on; only 
+    otherwise evaluate the existing descending-to-planet logic. 
+    This both prevents the crash and cleans up the stale table entries, which previously accumulated 
+    forever. 
+---------------------------------------------------------------------------------------------------
 Version: 2.2.3
 Changes: Made by RBTCollins 8/1/2026
     Fixes the 'can't deconstruct fulgoran lightning attractors' issue.

@@ -1856,10 +1856,13 @@ function CargoPodHandlerOnTick()
     if (storage.cargo_pods == nil) then return end
 
     for index, pod in pairs(storage.cargo_pods) do
-
+        -- Pods sent from one platform to another land on a platform and are destroyed there,
+        -- so they never pass through the "surface without a platform" state below. The stored
+        -- entity reference becomes invalid and any API call on it would crash the game.
+        if (not pod.valid) then
+            storage.cargo_pods[index] = nil
         -- Make sure the pod is now descending, which means the surface shouldn't have a platform.
-        -- This will likely break in the future if there is a way to send platform to platform.
-        if (pod.surface.platform == nil) then
+        elseif (pod.surface.platform == nil) then
             local surface = pod.surface
             local force = pod.force
 
